@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Art Caption Generator - Best_Of_AI_Art</title>
+    <style>
+        :root {
+            --bg-dark: #131313;
+            --text-light: #FFFFFF;
+            --text-secondary: #E0E0E0;
+            --primary-accent: #fe95e7;
+            --secondary-accent: #7d22d8;
+            --input-bg: #2a2a2a;
+            --border-color: #404040;
+            --hover-bg: #3a3a3a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .form-section {
+            background: linear-gradient(135deg, rgba(254, 149, 231, 0.1), rgba(125, 34, 216, 0.1));
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .form-section:hover {
+            border-color: var(--primary-accent);
+            box-shadow: 0 8px 32px rgba(254, 149, 231, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--primary-accent);
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+            transition: all 0.3s ease;
+            min-height: 48px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-accent);
+            background-color: var(--hover-bg);
+            box-shadow: 0 0 0 3px rgba(254, 149, 231, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .hashtag-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .output-section {
+            background: rgba(125, 34, 216, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--secondary-accent);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .output-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+        }
+
+        .output-section h2 {
+            color: var(--primary-accent);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .caption-output {
+            background-color: var(--input-bg);
+            border-radius: 12px;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            border: 1px solid var(--border-color);
+            min-height: 120px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .copy-button {
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 16px;
+            min-height: 48px;
+            width: 100%;
+        }
+
+        .copy-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(254, 149, 231, 0.3);
+        }
+
+        .copy-button:active {
+            transform: translateY(0);
+        }
+
+        .copy-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, var(--primary-accent), var(--secondary-accent));
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-family: Arial, sans-serif;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .copy-feedback.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-link {
+            display: block;
+            margin-top: 10px;
+            color: var(--primary-accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--secondary-accent);
+            text-decoration: underline;
+        }
+
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+                gap: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .form-section,
+            .output-section {
+                padding: 20px;
+            }
+
+            .hashtag-inputs {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .form-group input,
+            .form-group textarea {
+                padding: 14px;
+            }
+
+            .caption-output {
+                font-size: 0.9rem;
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .form-section,
+            .output-section {
+                padding: 16px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-section,
+        .output-section {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        /* Placeholder styling */
+        ::placeholder {
+            color: #888;
+            opacity: 1;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--input-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-accent);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>AI Art Caption Generator</h1>
+            <p>Create perfect captions for @Best_Of_AI_Art Instagram posts</p>
+        </header>
+
+        <main>
+            <section class="form-section">
+                <div class="form-group">
+                    <label for="post-date">Post Date</label>
+                    <input type="date" id="post-date" placeholder="Select the post date">
+                </div>
+
+                <div class="form-group">
+                    <label for="image-description">Image Description</label>
+                    <textarea id="image-description" placeholder="Describe the AI-generated artwork..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="prompt">AI Generation Prompt</label>
+                    <textarea id="prompt" placeholder="Enter the prompt used to generate the image..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Additional Hashtags</label>
+                    <div class="hashtag-inputs">
+                        <input type="text" id="hashtag2" placeholder="Hashtag 2 (without #)">
+                        <input type="text" id="hashtag3" placeholder="Hashtag 3 (without #)">
+                    </div>
+                </div>
+            </section>
+
+            <section class="output-section">
+                <h2>Generated Caption</h2>
+                <div class="caption-output" id="caption-output">
+                    Fill in the form above to generate your Instagram caption...
+                </div>
+                <button class="copy-button" id="copy-button">Copy Caption to Clipboard</button>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>TheBestOfAIArt • Generate engaging captions for AI artwork</p>
+            <a href="https://business.facebook.com/latest/composer/?global_scope_id=446586505803178&business_id=446586505803178&page_id=17841475172339082&asset_id=17841475172339082&redirect_session_id=a06cfff7-106f-4d10-b6cd-f8bafa984aa2" class="footer-link" target="_blank">Schedule Post</a>
+        </footer>
+    </div>
+
+    <div class="copy-feedback" id="copy-feedback">
+        Caption copied to clipboard! 📋
+    </div>
+
+    <script>
+        // Get all input elements
+        const postDate = document.getElementById('post-date');
+        const imageDescription = document.getElementById('image-description');
+        const prompt = document.getElementById('prompt');
+        const hashtag2 = document.getElementById('hashtag2');
+        const hashtag3 = document.getElementById('hashtag3');
+        const captionOutput = document.getElementById('caption-output');
+        const copyButton = document.getElementById('copy-button');
+        const copyFeedback = document.getElementById('copy-feedback');
+
+        // Set today's date as default
+        const today = new Date().toISOString().split('T')[0];
+        postDate.value = today;
+
+        // Function to format date
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            const options = { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        // Function to generate caption
+        function generateCaption() {
+            const formattedDate = formatDate(postDate.value);
+            const description = imageDescription.value.trim();
+            const promptText = prompt.value.trim();
+            const hash2 = hashtag2.value.trim();
+            const hash3 = hashtag3.value.trim();
+
+            // Build the caption with proper line breaks
+            let caption = '';
+            
+            // Line 1: Date & description
+            if (formattedDate || description) {
+                caption += `${formattedDate}${formattedDate && description ? ' - ' : ''}${description}\n`;
+            }
+            
+            // Line 2: Blank line
+            caption += '\n';
+            
+            // Line 3: AI Generation Prompt
+            if (promptText) {
+                caption += `Prompt: ${promptText}\n`;
+            }
+            
+            // Line 4: Blank line
+            caption += '\n';
+            
+            // Line 5: Best_Of_AI_Art message
+            caption += `@Best_Of_AI_Art is where you'll see the coolest AI art on the internet. Follow for more.\n`;
+            
+            // Line 6: Blank line
+            caption += '\n';
+            
+            // Line 7: Hashtags
+            caption += `#AIArt`;
+            if (hash2) caption += ` #${hash2}`;
+            if (hash3) caption += ` #${hash3}`;
+
+            return caption;
+        }
+
+        // Function to update caption display
+        function updateCaption() {
+            const caption = generateCaption();
+            if (caption.trim()) {
+                captionOutput.textContent = caption;
+                copyButton.disabled = false;
+            } else {
+                captionOutput.textContent = 'Fill in the form above to generate your Instagram caption...';
+                copyButton.disabled = true;
+            }
+        }
+
+        // Add event listeners for real-time updates
+        postDate.addEventListener('input', updateCaption);
+        imageDescription.addEventListener('input', updateCaption);
+        prompt.addEventListener('input', updateCaption);
+        hashtag2.addEventListener('input', updateCaption);
+        hashtag3.addEventListener('input', updateCaption);
+
+        // Copy to clipboard functionality
+        copyButton.addEventListener('click', async () => {
+            const caption = generateCaption();
+            
+            try {
+                await navigator.clipboard.writeText(caption);
+                showCopyFeedback();
+            } catch (err) {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = caption;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showCopyFeedback();
+            }
+        });
+
+        // Show copy feedback
+        function showCopyFeedback() {
+            copyFeedback.classList.add('show');
+            setTimeout(() => {
+                copyFeedback.classList.remove('show');
+            }, 2000);
+        }
+
+        // Initialize caption on page load
+        updateCaption();
+    </script>
+</body>
+</html>
