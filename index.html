@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Art Caption Generator - Best_Of_AI_Art</title>
+    <title>💬 CaptionMake</title>
     <style>
         :root {
             --bg-dark: #131313;
             --text-light: #FFFFFF;
             --text-secondary: #E0E0E0;
-            --primary-accent: #fe95e7;
-            --secondary-accent: #7d22d8;
+            --primary-accent: #95e6fe;
+            --secondary-accent: #2262d8;
             --input-bg: #2a2a2a;
             --border-color: #404040;
             --hover-bg: #3a3a3a;
@@ -62,8 +62,99 @@
             font-size: 1.1rem;
         }
 
+        /* Template Selection Styles */
+        .template-selection {
+            background: linear-gradient(135deg, rgba(149, 165, 254, 0.1), rgba(34, 52, 216, 0.1));
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .template-selection h2 {
+            color: var(--primary-accent);
+            margin-bottom: 24px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .template-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .template-item {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .template-item:hover {
+            border-color: var(--primary-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(149, 156, 254, 0.1);
+        }
+
+        .template-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-accent), var(--secondary-accent));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .template-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .template-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-accent);
+            margin-bottom: 8px;
+        }
+
+        .template-description {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Back Button */
+        .back-button {
+            background: transparent;
+            color: var(--primary-accent);
+            border: 1px solid var(--primary-accent);
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+            align-self: flex-start;
+        }
+
+        .back-button:hover {
+            background: var(--primary-accent);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* Form and Output Styles (existing styles remain the same) */
         .form-section {
-            background: linear-gradient(135deg, rgba(254, 149, 231, 0.1), rgba(125, 34, 216, 0.1));
+            background: linear-gradient(135deg, rgba(149, 165, 254, 0.1), rgba(34, 52, 216, 0.1));
             border-radius: 16px;
             padding: 30px;
             border: 1px solid var(--border-color);
@@ -72,7 +163,7 @@
 
         .form-section:hover {
             border-color: var(--primary-accent);
-            box-shadow: 0 8px 32px rgba(254, 149, 231, 0.1);
+            box-shadow: 0 8px 32px rgba(149, 156, 254, 0.1);
         }
 
         .form-group {
@@ -106,7 +197,7 @@
             outline: none;
             border-color: var(--primary-accent);
             background-color: var(--hover-bg);
-            box-shadow: 0 0 0 3px rgba(254, 149, 231, 0.2);
+            box-shadow: 0 8px 32px rgba(149, 156, 254, 0.1);
             transform: translateY(-1px);
         }
 
@@ -122,7 +213,7 @@
         }
 
         .output-section {
-            background: rgba(125, 34, 216, 0.1);
+            background: rgba(34, 76, 216, 0.1);
             border-radius: 16px;
             padding: 30px;
             border: 1px solid var(--secondary-accent);
@@ -160,7 +251,6 @@
             border: 1px solid var(--border-color);
             min-height: 120px;
             transition: all 0.3s ease;
-            position: relative;
         }
 
         .copy-button {
@@ -181,7 +271,7 @@
 
         .copy-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(254, 149, 231, 0.3);
+            box-shadow: 0 8px 32px rgba(149, 156, 254, 0.1);
         }
 
         .copy-button:active {
@@ -208,6 +298,98 @@
             opacity: 1;
             transform: translateX(0);
         }
+      
+        .schedule-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .schedule-button {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 600;
+            font-family: Arial, sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-block;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            min-width: 180px;
+            border: none;
+        }
+
+        .schedule-button.primary {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .schedule-button.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .schedule-button.primary:active {
+            transform: translateY(0);
+        }
+
+        .schedule-button.secondary {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .schedule-button.secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        .schedule-button.secondary:active {
+            transform: translateY(0);
+        }
+
+        .schedule-button.tertiary {
+            background: linear-gradient(135deg, #1bb60d, #18a72b);
+            color: white;
+        }
+
+        .schedule-button.tertiary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.4);
+        }
+
+        .schedule-button.tertiary:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .schedule-buttons {
+                flex-direction: column;
+            }
+            
+            .schedule-button {
+                width: 100%;
+                min-width: auto;
+            }
+        }
+
+        /* Responsive design for smaller screens */
+        @media (max-width: 768px) {
+            .schedule-buttons {
+                flex-direction: column;
+            }
+            
+            .schedule-button {
+                width: 100%;
+                min-width: auto;
+            }
+        }
 
         .footer {
             text-align: center;
@@ -230,6 +412,11 @@
             text-decoration: underline;
         }
 
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
         /* Mobile Optimizations */
         @media (max-width: 768px) {
             .container {
@@ -242,7 +429,8 @@
             }
 
             .form-section,
-            .output-section {
+            .output-section,
+            .template-selection {
                 padding: 20px;
             }
 
@@ -276,7 +464,8 @@
             }
 
             .form-section,
-            .output-section {
+            .output-section,
+            .template-selection {
                 padding: 16px;
             }
         }
@@ -294,7 +483,8 @@
         }
 
         .form-section,
-        .output-section {
+        .output-section,
+        .template-selection {
             animation: fadeIn 0.6s ease-out;
         }
 
@@ -326,48 +516,51 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1>AI Art Caption Generator</h1>
-            <p>Create perfect captions for @Best_Of_AI_Art Instagram posts</p>
+            <h1>Caption Creator</h1>
+            <p>Create perfect captions for your social media posts</p>
         </header>
 
-        <main>
-            <section class="form-section">
-                <div class="form-group">
-                    <label for="post-date">Post Date</label>
-                    <input type="date" id="post-date" placeholder="Select the post date">
+        <!-- Template Selection Screen -->
+        <section class="template-selection" id="template-selection">
+            <h2>Choose Your Caption Template</h2>
+            <div class="template-list">
+                <div class="template-item" data-template="ai-art">
+                    <div class="template-title">The Best of AI Art</div>
+                    <div class="template-description">Create captions for @TheBestofAIArt</div>
                 </div>
+              <div class="template-item" data-template="reaction-video">
+    <div class="template-title">Team Sawrite - Song Reaction</div>
+    <div class="template-description">Create video descriptions for Team Sawrite song reaction videos</div>
+</div>
 
-                <div class="form-group">
-                    <label for="image-description">Image Description</label>
-                    <textarea id="image-description" placeholder="Describe the AI-generated artwork..."></textarea>
+                <div class="template-item" data-template="generic">
+                    <div class="template-title">Generic Social Post</div>
+                    <div class="template-description">A versatile template for general social media posts with customizable content and hashtags</div>
                 </div>
+            </div>
+        </section>
 
-                <div class="form-group">
-                    <label for="prompt">AI Generation Prompt</label>
-                    <textarea id="prompt" placeholder="Enter the prompt used to generate the image..."></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Additional Hashtags</label>
-                    <div class="hashtag-inputs">
-                        <input type="text" id="hashtag2" placeholder="Hashtag 2 (without #)">
-                        <input type="text" id="hashtag3" placeholder="Hashtag 3 (without #)">
-                    </div>
-                </div>
+        <!-- Caption Creation Screen -->
+        <main id="caption-creator" class="hidden">
+            <button class="back-button" id="back-button">← Back to Templates</button>
+            
+            <section class="form-section" id="form-section">
+                <!-- Form content will be dynamically generated based on selected template -->
             </section>
 
             <section class="output-section">
                 <h2>Generated Caption</h2>
                 <div class="caption-output" id="caption-output">
-                    Fill in the form above to generate your Instagram caption...
+                    Fill in the form above to generate your caption...
                 </div>
                 <button class="copy-button" id="copy-button">Copy Caption to Clipboard</button>
+                 <div class="schedule-buttons" id="schedule-buttons"></div>
+
             </section>
         </main>
 
         <footer class="footer">
-            <p>TheBestOfAIArt • Generate engaging captions for AI artwork</p>
-            <a href="https://business.facebook.com/latest/composer/?global_scope_id=446586505803178&business_id=446586505803178&page_id=17841475172339082&asset_id=17841475172339082&redirect_session_id=a06cfff7-106f-4d10-b6cd-f8bafa984aa2" class="footer-link" target="_blank">Schedule Post</a>
+            <a href="https://linktr.ee/kaywhocreates" class="footer-link" target="_blank">Made by Kay 🧡</a>
         </footer>
     </div>
 
@@ -376,21 +569,393 @@
     </div>
 
     <script>
-        // Get all input elements
-        const postDate = document.getElementById('post-date');
-        const imageDescription = document.getElementById('image-description');
-        const prompt = document.getElementById('prompt');
-        const hashtag2 = document.getElementById('hashtag2');
-        const hashtag3 = document.getElementById('hashtag3');
+        // Template definitions
+        const templates = {
+            'ai-art': {
+                title: 'AI Art Showcase',
+                fields: [
+                    {
+                        id: 'post-date',
+                        label: 'Post Date',
+                        type: 'date',
+                        placeholder: 'Select the post date'
+                    },
+                    {
+                        id: 'image-description',
+                        label: 'Image Description',
+                        type: 'textarea',
+                        placeholder: 'Describe the AI-generated artwork...'
+                    },
+                    {
+                        id: 'prompt',
+                        label: 'AI Generation Prompt',
+                        type: 'textarea',
+                        placeholder: 'Enter the prompt used to generate the image...'
+                    },
+                    {
+                        id: 'hashtag2',
+                        label: 'Hashtag 2',
+                        type: 'text',
+                        placeholder: 'Hashtag 2 (without #)',
+                        group: 'hashtags'
+                    },
+                    {
+                        id: 'hashtag3',
+                        label: 'Hashtag 3',
+                        type: 'text',
+                        placeholder: 'Hashtag 3 (without #)',
+                        group: 'hashtags'
+                    }
+                ],
+              scheduleButtons: [
+            {
+                text: 'Schedule Post',
+                url: 'https://business.facebook.com/latest/composer/?global_scope_id=446586505803178&business_id=446586505803178&page_id=17841475172339082&asset_id=17841475172339082&redirect_session_id=a06cfff7-106f-4d10-b6cd-f8bafa984aa2',
+                style: 'primary'
+            }
+        ],
+                generator: function(data) {
+                    const formattedDate = data.postDate ? formatDate(data.postDate) : '';
+                    const description = data.imageDescription.trim();
+                    const promptText = data.prompt.trim();
+                    const hash2 = data.hashtag2.trim();
+                    const hash3 = data.hashtag3.trim();
+
+                    let caption = '';
+                    
+                    if (formattedDate || description) {
+                        caption += `${formattedDate}${formattedDate && description ? ' - ' : ''}${description}\n`;
+                    }
+                    
+                    caption += '\n';
+                    
+                    if (promptText) {
+                        caption += `Prompt: ${promptText}\n`;
+                    }
+                    
+                    caption += '\n';
+                    caption += `@TheBestOfAIArt is where you'll see the coolest AI art on the internet. Follow for more.\n`;
+                    caption += '\n';
+                    caption += `#AIArt`;
+                    if (hash2) caption += ` #${hash2}`;
+                    if (hash3) caption += ` #${hash3}`;
+
+                    return caption;
+                }
+            },
+          'reaction-video': {
+    title: 'Reaction Video Post',
+    fields: [
+        {
+            id: 'opening-line',
+            label: 'Opening Line',
+            type: 'text',
+            placeholder: 'Write your punchy opening line...'
+        },
+        {
+            id: 'song-title',
+            label: 'Song Title',
+            type: 'text',
+            placeholder: 'Enter the song title...'
+        },
+        {
+            id: 'timestamps',
+            label: 'Video Timestamps',
+            type: 'textarea',
+            placeholder: 'Enter timestamps (one per line)...'
+        }
+    ],
+            scheduleButtons: [
+            {
+                text: 'Post to YouTube',
+                url: 'https://studio.youtube.com',
+                style: 'primary'
+            },
+            {
+                text: 'Share on Social Media',
+                url: 'https://business.facebook.com',
+                style: 'secondary'
+            }
+        ],
+    generator: function(data) {
+        const openingLine = data.openingLine.trim();
+        const songTitle = data.songTitle.trim();
+        const timestamps = data.timestamps.trim();
+
+        let caption = '';
+
+        // Opening section
+        if (openingLine) {
+            caption += `${openingLine}... but what do we REALLY think about it? 😳\n\n`;
+        }
+
+        // Song mention
+        if (songTitle) {
+            caption += `In this video, we sit down to listen to ‘${songTitle}’ for the first time since releasing it.\n\n`;
+        }
+
+        caption += `Was it a masterpiece? Did we cringe? Watch to find out!\n\n`;
+
+        // Links section
+        caption += `________\n\n`;
+        caption += `💿 Listen to our album, Comedy Silver, here: \n`;
+        caption += `https://www.youtube.com/playlist?list=PLCvHZixwy4_-8XgAkGoqoh7bNPgZzJ6vA\n\n`;
+        caption += `👇 Want more? Follow us everywhere:\n`;
+        caption += `▶ https://linktr.ee/teamsawrite\n\n`;
+        caption += `________\n\n`;
+
+        // Timestamps
+        if (timestamps) {
+            caption += `🎶 Timestamps:\n\n${timestamps}\n\n`;
+        }
+
+        caption += `________\n\n`;
+
+        // Hashtags
+        if (songTitle) {
+            caption += `#${songTitle.replace(/\s+/g, '')} `;
+        }
+        caption += `#NewMusic #SongReview #MusicReaction #BandLife`;
+
+        return caption;
+    }
+},
+            'generic': {
+    title: 'Generic Social Post',
+    fields: [
+        {
+            id: 'post-title',
+            label: 'Post Title',
+            type: 'text',
+            placeholder: 'Enter your post title...'
+        },
+        {
+            id: 'main-content',
+            label: 'Main Content',
+            type: 'textarea',
+            placeholder: 'Write your main post content...'
+        },
+        {
+            id: 'call-to-action',
+            label: 'Call to Action',
+            type: 'text',
+            placeholder: 'Add a call to action (optional)...'
+        },
+        {
+            id: 'hashtag1',
+            label: 'Hashtag 1',
+            type: 'text',
+            placeholder: 'Primary hashtag (without #)',
+            group: 'hashtags'
+        },
+        {
+            id: 'hashtag2',
+            label: 'Hashtag 2',
+            type: 'text',
+            placeholder: 'Secondary hashtag (without #)',
+            group: 'hashtags'
+        },
+        {
+            id: 'hashtag3',
+            label: 'Hashtag 3',
+            type: 'text',
+            placeholder: 'Third hashtag (without #)',
+            group: 'hashtags'
+        }
+    ],
+              scheduleButtons: [
+        {
+            text: 'Schedule on Facebook',
+            url: 'https://business.facebook.com',
+            style: 'secondary'  // Red
+        },
+        {
+            text: 'Post to Instagram',
+            url: 'https://www.facebook.com/business/instagram',
+            style: 'primary'  // Blue
+        },
+        {
+            text: 'Share on Twitter',
+            url: 'https://x.com/compose/tweet',
+            style: 'secondary'  // Orange-yellow
+        }
+    ],
+    generator: function(data) {
+        // Get and clean input values
+        const title = data.postTitle.trim();
+        const content = data.mainContent.trim();
+        const cta = data.callToAction.trim();
+        const hash1 = data.hashtag1.trim();
+        const hash2 = data.hashtag2.trim();
+        const hash3 = data.hashtag3.trim();
+
+        let caption = '';
+      
+        // 🔽 Add your pre-written sentence here
+        caption += `Pre-written line 1\n\n`;
+
+        // Add post title if provided
+        if (title) {
+            caption += `${title}\n\n`;
+        }
+
+        // Add main content if provided
+        if (content) {
+            caption += `${content}\n\n`;
+        }
+
+        // Add call to action if provided
+        if (cta) {
+            caption += `${cta}\n\n`;
+        }
+
+        // 🔽 Add your pre-written sentence here
+        caption += `Pre-written line 2\n\n`;
+
+        // Add hashtags if provided
+        const hashtags = [hash1, hash2, hash3]
+            .filter(h => h)  // remove empty values
+            .map(h => `#${h}`);  // add # to each
+
+        if (hashtags.length > 0) {
+            caption += hashtags.join(' ');
+        }
+
+        return caption;
+    }
+}
+        };
+
+        // DOM elements
+        const templateSelection = document.getElementById('template-selection');
+        const captionCreator = document.getElementById('caption-creator');
+        const formSection = document.getElementById('form-section');
         const captionOutput = document.getElementById('caption-output');
         const copyButton = document.getElementById('copy-button');
         const copyFeedback = document.getElementById('copy-feedback');
+        const backButton = document.getElementById('back-button');
 
-        // Set today's date as default
-        const today = new Date().toISOString().split('T')[0];
-        postDate.value = today;
+        let currentTemplate = null;
+        let formFields = {};
 
-        // Function to format date
+        // Initialize app
+        function init() {
+            // Add event listeners for template selection
+            document.querySelectorAll('.template-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    const templateId = item.dataset.template;
+                    selectTemplate(templateId);
+                });
+            });
+
+            // Back button event listener
+            backButton.addEventListener('click', showTemplateSelection);
+
+            // Copy button event listener
+            copyButton.addEventListener('click', copyToClipboard);
+        }
+
+        // Show template selection screen
+        function showTemplateSelection() {
+            templateSelection.classList.remove('hidden');
+            captionCreator.classList.add('hidden');
+            currentTemplate = null;
+        }
+
+        // Select and load a template
+        function selectTemplate(templateId) {
+            currentTemplate = templates[templateId];
+            if (!currentTemplate) return;
+
+            templateSelection.classList.add('hidden');
+            captionCreator.classList.remove('hidden');
+            
+            generateForm();
+            generateScheduleButtons();
+            updateCaption();
+        }
+
+        // Generate form based on selected template
+        function generateForm() {
+            if (!currentTemplate) return;
+
+            formSection.innerHTML = '';
+            formFields = {};
+
+            // Group hashtag fields
+            const hashtagFields = currentTemplate.fields.filter(field => field.group === 'hashtags');
+            const regularFields = currentTemplate.fields.filter(field => field.group !== 'hashtags');
+
+            // Create regular fields
+            regularFields.forEach(field => {
+                const formGroup = createFormGroup(field);
+                formSection.appendChild(formGroup);
+            });
+
+            // Create hashtag group if exists
+            if (hashtagFields.length > 0) {
+                const hashtagGroup = document.createElement('div');
+                hashtagGroup.className = 'form-group';
+                
+                const label = document.createElement('label');
+                label.textContent = 'Additional Hashtags';
+                hashtagGroup.appendChild(label);
+
+                const hashtagInputs = document.createElement('div');
+                hashtagInputs.className = 'hashtag-inputs';
+
+                hashtagFields.forEach(field => {
+                    const input = createInput(field);
+                    hashtagInputs.appendChild(input);
+                });
+
+                hashtagGroup.appendChild(hashtagInputs);
+                formSection.appendChild(hashtagGroup);
+            }
+
+            // Set default date for AI art template
+            if (currentTemplate === templates['ai-art'] && formFields['post-date']) {
+                const today = new Date().toISOString().split('T')[0];
+                formFields['post-date'].value = today;
+            }
+        }
+
+        // Create form group
+        function createFormGroup(field) {
+            const formGroup = document.createElement('div');
+            formGroup.className = 'form-group';
+
+            const label = document.createElement('label');
+            label.textContent = field.label;
+            label.setAttribute('for', field.id);
+            formGroup.appendChild(label);
+
+            const input = createInput(field);
+            formGroup.appendChild(input);
+
+            return formGroup;
+        }
+
+        // Create input element
+        function createInput(field) {
+            let input;
+            
+            if (field.type === 'textarea') {
+                input = document.createElement('textarea');
+            } else {
+                input = document.createElement('input');
+                input.type = field.type;
+            }
+
+            input.id = field.id;
+            input.placeholder = field.placeholder;
+            input.addEventListener('input', updateCaption);
+            
+            formFields[field.id] = input;
+            return input;
+        }
+
+        // Format date
         function formatDate(dateString) {
             if (!dateString) return '';
             const date = new Date(dateString);
@@ -402,69 +967,57 @@
             return date.toLocaleDateString('en-US', options);
         }
 
-        // Function to generate caption
-        function generateCaption() {
-            const formattedDate = formatDate(postDate.value);
-            const description = imageDescription.value.trim();
-            const promptText = prompt.value.trim();
-            const hash2 = hashtag2.value.trim();
-            const hash3 = hashtag3.value.trim();
-
-            // Build the caption with proper line breaks
-            let caption = '';
-            
-            // Line 1: Date & description
-            if (formattedDate || description) {
-                caption += `${formattedDate}${formattedDate && description ? ' - ' : ''}${description}\n`;
-            }
-            
-            // Line 2: Blank line
-            caption += '\n';
-            
-            // Line 3: AI Generation Prompt
-            if (promptText) {
-                caption += `Prompt: ${promptText}\n`;
-            }
-            
-            // Line 4: Blank line
-            caption += '\n';
-            
-            // Line 5: Best_Of_AI_Art message
-            caption += `@TheBestOfAIArt is where you'll see the coolest AI art on the internet. Follow for more.\n`;
-            
-            // Line 6: Blank line
-            caption += '\n';
-            
-            // Line 7: Hashtags
-            caption += `#AIArt`;
-            if (hash2) caption += ` #${hash2}`;
-            if (hash3) caption += ` #${hash3}`;
-
-            return caption;
-        }
-
-        // Function to update caption display
+        // Update caption display
         function updateCaption() {
-            const caption = generateCaption();
+            if (!currentTemplate) return;
+
+            // Collect form data
+            const data = {};
+            Object.keys(formFields).forEach(fieldId => {
+                const camelCaseId = fieldId.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                data[camelCaseId] = formFields[fieldId].value;
+            });
+
+            // Generate caption using template's generator
+            const caption = currentTemplate.generator(data);
+            
             if (caption.trim()) {
                 captionOutput.textContent = caption;
                 copyButton.disabled = false;
             } else {
-                captionOutput.textContent = 'Fill in the form above to generate your Instagram caption...';
+                captionOutput.textContent = 'Fill in the form above to generate your caption...';
                 copyButton.disabled = true;
             }
         }
+      
+      // Generate schedule buttons based on current template
+        function generateScheduleButtons() {
+            const scheduleContainer = document.getElementById('schedule-buttons');
+            scheduleContainer.innerHTML = '';
+            
+            if (!currentTemplate || !currentTemplate.scheduleButtons) return;
+            
+            currentTemplate.scheduleButtons.forEach(button => {
+                const btnElement = document.createElement('a');
+                btnElement.href = button.url;
+                btnElement.target = '_blank';
+                btnElement.textContent = button.text;
+                btnElement.className = `schedule-button ${button.style}`;
+                scheduleContainer.appendChild(btnElement);
+            });
+        }
 
-        // Add event listeners for real-time updates
-        postDate.addEventListener('input', updateCaption);
-        imageDescription.addEventListener('input', updateCaption);
-        prompt.addEventListener('input', updateCaption);
-        hashtag2.addEventListener('input', updateCaption);
-        hashtag3.addEventListener('input', updateCaption);
+        // Copy to clipboard
+        async function copyToClipboard() {
+            if (!currentTemplate) return;
 
-        // Copy to clipboard functionality
-        copyButton.addEventListener('click', async () => {
-            const caption = generateCaption();
+            const data = {};
+            Object.keys(formFields).forEach(fieldId => {
+                const camelCaseId = fieldId.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
+                data[camelCaseId] = formFields[fieldId].value;
+            });
+
+            const caption = currentTemplate.generator(data);
             
             try {
                 await navigator.clipboard.writeText(caption);
@@ -479,7 +1032,7 @@
                 document.body.removeChild(textArea);
                 showCopyFeedback();
             }
-        });
+        }
 
         // Show copy feedback
         function showCopyFeedback() {
@@ -489,8 +1042,8 @@
             }, 2000);
         }
 
-        // Initialize caption on page load
-        updateCaption();
+        // Initialize the app
+        init();
     </script>
 </body>
 </html>
