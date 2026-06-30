@@ -532,6 +532,11 @@
     <div class="template-title">Team Sawrite - Song Reaction</div>
     <div class="template-description">Create video descriptions for Team Sawrite song reaction videos</div>
 </div>
+              
+              <div class="template-item" data-template="song-release">
+    <div class="template-title">Team Sawrite - Song Description</div>
+    <div class="template-description">Create video descriptions for Team Sawrite music videos</div>
+</div>
 
                 <div class="template-item" data-template="generic">
                     <div class="template-title">Generic Social Post</div>
@@ -719,6 +724,72 @@
 
         return caption;
     }
+},
+          'song-release': {
+  title: 'Song Video Post',
+  fields: [
+    { id: 'oneLiner', label: 'Funny One-Liner', type: 'text', placeholder: 'Write a short funny one-liner about the song...' },
+    { id: 'lyrics', label: 'Lyrics', type: 'textarea', placeholder: 'Paste the song lyrics...' },
+    { id: 'effectCredits', label: 'Effect Author Credits', type: 'textarea', placeholder: 'Credit the ZGameEditor Visualizer effect authors...' },
+    { id: 'customHashtag', label: 'Custom Hashtag', type: 'text', placeholder: 'Enter a custom hashtag (without #)...' }
+  ],
+  scheduleButtons: [
+    { text: 'Post to YouTube', url: 'https://studio.youtube.com', style: 'primary' },
+    { text: 'Share on Social Media', url: 'https://business.facebook.com', style: 'secondary' }
+  ],
+  generator: function(data) {
+    const oneLiner = data.oneLiner.trim();
+    const lyrics = data.lyrics.trim();
+    const effectCredits = data.effectCredits.trim();
+    const customHashtag = data.customHashtag.trim();
+    const year = new Date().getFullYear();
+
+    let caption = '';
+
+    // Opening line
+    if (oneLiner) {
+      caption += `${oneLiner}\n\n`;
+    }
+
+    caption += `Share your favourite line in the comments!\n\n`;
+
+    // Links section
+    caption += `_____\n\n`;
+    caption += `💿 Listen to our album, Comedy Silver, here:\n`;
+    caption += `https://www.youtube.com/playlist?list=PLCvHZixwy4_-8XgAkGoqoh7bNPgZzJ6vA\n\n`;
+    caption += `👇 Want to laugh? Here:\n`;
+    caption += `▶ https://linktr.ee/teamsawrite\n\n`;
+    caption += `_____\n\n`;
+
+    // Lyrics
+    if (lyrics) {
+      caption += `Lyrics:\n\n${lyrics}\n\n`;
+      caption += `_____\n\n`;
+    }
+
+    // Video credits
+    caption += `🎬 Video Credits:\n\n`;
+    caption += `Video created by Team Sawrite using FL Studio ZGameEditor Visializer plugin.\n\n`;
+    if (effectCredits) {
+      caption += `Effect author credits:\n${effectCredits}\n\n`;
+    }
+    caption += `_____\n\n`;
+
+    // Project credits
+    caption += `🏅 Project Credits:\n\n`;
+    caption += `Conceptualised, Written, Composed, Recorded, Re-recorded, Arranged, Engineered, Produced, Mixed, Mastered, Reviewed, Uploaded, Taken Down, Re-mixed, Re-mastered, Re-uploaded, and Enjoyed by Kaelin Halcrow and Gary Hughes, aka Team Sawrite.\n\n`;
+    caption += `℗ ${year} Team Sawrite\n`;
+    caption += `© ${year} Team Sawrite\n\n`;
+    caption += `_____\n\n`;
+
+    // Hashtags
+    caption += `#ComedyMusic #Funny`;
+    if (customHashtag) {
+      caption += ` #${customHashtag.replace(/\s+/g, '')}`;
+    }
+
+    return caption;
+  }
 },
             'generic': {
     title: 'Generic Social Post',
